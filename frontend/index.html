@@ -1,0 +1,1741 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BuildMate – Connect. Build. Trust.</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --brick: #C0441E;
+    --brick-light: #E85D30;
+    --brick-dark: #8B2E10;
+    --sand: #F5EDD8;
+    --sand-dark: #E8D9BC;
+    --charcoal: #1C1A18;
+    --stone: #4A4540;
+    --mist: #F9F6F0;
+    --teal: #1A7A6E;
+    --teal-light: #E8F5F3;
+    --amber: #D4820A;
+    --amber-light: #FEF3DC;
+    --success: #1A6B3C;
+    --success-light: #E6F4EC;
+    --danger: #B91C1C;
+    --danger-light: #FEE8E8;
+    --pending: #7C3AED;
+    --pending-light: #F0EBFE;
+    --border: #E2D9CC;
+    --text-muted: #7A7068;
+    --shadow: 0 2px 12px rgba(28,26,24,0.08);
+    --shadow-lg: 0 8px 32px rgba(28,26,24,0.12);
+    --radius: 12px;
+    --radius-lg: 20px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--mist);
+    color: var(--charcoal);
+    min-height: 100vh;
+  }
+
+  /* ─── LANDING ─── */
+  #landing {
+    min-height: 100vh;
+    background: var(--charcoal);
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .landing-pattern {
+    position: absolute; inset: 0;
+    background-image:
+      repeating-linear-gradient(0deg, transparent, transparent 39px, rgba(255,255,255,0.03) 39px, rgba(255,255,255,0.03) 40px),
+      repeating-linear-gradient(90deg, transparent, transparent 39px, rgba(255,255,255,0.03) 39px, rgba(255,255,255,0.03) 40px);
+    pointer-events: none;
+  }
+
+  .landing-accent {
+    position: absolute;
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba(192,68,30,0.25) 0%, transparent 70%);
+    top: -200px; right: -100px;
+    pointer-events: none;
+  }
+
+  .landing-nav {
+    padding: 24px 48px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: relative;
+    z-index: 2;
+  }
+
+  .logo {
+    font-family: 'DM Serif Display', serif;
+    font-size: 28px;
+    color: #fff;
+    letter-spacing: -0.5px;
+  }
+
+  .logo span { color: var(--brick-light); }
+
+  .landing-hero {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 60px 24px;
+    position: relative;
+    z-index: 2;
+  }
+
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(192,68,30,0.2);
+    border: 1px solid rgba(192,68,30,0.4);
+    color: #FFA07A;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    padding: 6px 16px;
+    border-radius: 100px;
+    margin-bottom: 32px;
+  }
+
+  .hero-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(42px, 7vw, 80px);
+    color: #fff;
+    line-height: 1.05;
+    letter-spacing: -2px;
+    margin-bottom: 24px;
+    max-width: 800px;
+  }
+
+  .hero-title em {
+    font-style: italic;
+    color: var(--brick-light);
+  }
+
+  .hero-sub {
+    font-size: 18px;
+    color: rgba(255,255,255,0.6);
+    max-width: 520px;
+    line-height: 1.7;
+    margin-bottom: 56px;
+    font-weight: 300;
+  }
+
+  .login-cards {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .login-card {
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: var(--radius-lg);
+    padding: 36px 40px;
+    width: 280px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: left;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .login-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+
+  .login-card.owner::before { background: linear-gradient(135deg, rgba(26,122,110,0.15), transparent); }
+  .login-card.builder::before { background: linear-gradient(135deg, rgba(192,68,30,0.2), transparent); }
+
+  .login-card:hover { border-color: rgba(255,255,255,0.25); transform: translateY(-4px); }
+  .login-card:hover::before { opacity: 1; }
+
+  .card-icon {
+    width: 48px; height: 48px;
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px;
+    margin-bottom: 20px;
+  }
+
+  .owner .card-icon { background: rgba(26,122,110,0.25); }
+  .builder .card-icon { background: rgba(192,68,30,0.25); }
+
+  .card-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 22px;
+    color: #fff;
+    margin-bottom: 8px;
+  }
+
+  .card-desc {
+    font-size: 13px;
+    color: rgba(255,255,255,0.5);
+    line-height: 1.6;
+    margin-bottom: 24px;
+  }
+
+  .card-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 10px 20px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .owner .card-btn { background: var(--teal); color: #fff; }
+  .builder .card-btn { background: var(--brick); color: #fff; }
+  .card-btn:hover { filter: brightness(1.1); }
+
+  /* ─── APP SHELL ─── */
+  #app { display: none; min-height: 100vh; }
+
+  .app-header {
+    background: #fff;
+    border-bottom: 1px solid var(--border);
+    padding: 0 32px;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: var(--shadow);
+  }
+
+  .app-logo {
+    font-family: 'DM Serif Display', serif;
+    font-size: 22px;
+    color: var(--charcoal);
+  }
+  .app-logo span { color: var(--brick); }
+
+  .header-right { display: flex; align-items: center; gap: 16px; }
+
+  .role-badge {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 4px 12px;
+    border-radius: 100px;
+  }
+
+  .role-owner { background: var(--teal-light); color: var(--teal); }
+  .role-builder { background: rgba(192,68,30,0.1); color: var(--brick); }
+
+  .avatar {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+  }
+
+  .avatar-owner { background: var(--teal); color: #fff; }
+  .avatar-builder { background: var(--brick); color: #fff; }
+
+  .signout-btn {
+    font-size: 12px;
+    color: var(--text-muted);
+    background: none;
+    border: 1px solid var(--border);
+    padding: 6px 14px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .signout-btn:hover { border-color: var(--stone); color: var(--charcoal); }
+
+  .app-nav {
+    background: #fff;
+    border-bottom: 1px solid var(--border);
+    padding: 0 32px;
+    display: flex;
+    gap: 0;
+    overflow-x: auto;
+  }
+
+  .nav-item {
+    padding: 14px 20px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-muted);
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    white-space: nowrap;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .nav-item:hover { color: var(--charcoal); }
+  .nav-item.active { color: var(--brick); border-bottom-color: var(--brick); }
+
+  .nav-badge {
+    background: var(--brick);
+    color: #fff;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 1px 6px;
+    border-radius: 100px;
+  }
+
+  .app-content { padding: 32px; max-width: 1100px; margin: 0 auto; }
+
+  /* ─── TABS ─── */
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+
+  /* ─── CARDS & COMPONENTS ─── */
+  .page-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 28px;
+    color: var(--charcoal);
+    margin-bottom: 6px;
+  }
+
+  .page-sub { font-size: 14px; color: var(--text-muted); margin-bottom: 28px; }
+
+  .card {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 24px;
+    margin-bottom: 16px;
+    box-shadow: var(--shadow);
+  }
+
+  .card-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 16px;
+  }
+
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 4px 12px;
+    border-radius: 100px;
+    letter-spacing: 0.3px;
+  }
+
+  .badge-success { background: var(--success-light); color: var(--success); }
+  .badge-pending { background: var(--pending-light); color: var(--pending); }
+  .badge-warning { background: var(--amber-light); color: var(--amber); }
+  .badge-danger { background: var(--danger-light); color: var(--danger); }
+  .badge-info { background: var(--teal-light); color: var(--teal); }
+  .badge-neutral { background: #F0EDE8; color: var(--stone); }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 10px 20px;
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .btn-primary { background: var(--brick); color: #fff; }
+  .btn-primary:hover { background: var(--brick-dark); }
+  .btn-success { background: var(--teal); color: #fff; }
+  .btn-success:hover { background: #155F55; }
+  .btn-outline { background: #fff; color: var(--charcoal); border: 1px solid var(--border); }
+  .btn-outline:hover { border-color: var(--stone); }
+  .btn-danger { background: var(--danger); color: #fff; }
+  .btn-sm { padding: 7px 14px; font-size: 12px; }
+
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .grid-3 { display: grid; grid-template-columns: repeat(3,1fr); gap: 16px; }
+
+  .stat-card {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px 24px;
+    box-shadow: var(--shadow);
+  }
+
+  .stat-label { font-size: 12px; color: var(--text-muted); font-weight: 500; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
+  .stat-value { font-family: 'DM Serif Display', serif; font-size: 28px; color: var(--charcoal); }
+  .stat-sub { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
+
+  /* ─── MILESTONE FLOW ─── */
+  .milestone-track {
+    display: flex;
+    gap: 0;
+    margin: 24px 0;
+    position: relative;
+    overflow-x: auto;
+    padding: 4px 0 12px;
+  }
+
+  .milestone-step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex: 1;
+    min-width: 120px;
+    position: relative;
+  }
+
+  .milestone-step:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    top: 16px;
+    left: 50%;
+    width: 100%;
+    height: 2px;
+    background: var(--border);
+    z-index: 0;
+  }
+
+  .milestone-step.done:not(:last-child)::after { background: var(--teal); }
+  .milestone-step.active:not(:last-child)::after { background: var(--amber); }
+
+  .ms-dot {
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px;
+    font-weight: 700;
+    position: relative;
+    z-index: 1;
+    border: 2px solid var(--border);
+    background: #fff;
+    color: var(--text-muted);
+  }
+
+  .milestone-step.done .ms-dot { background: var(--teal); border-color: var(--teal); color: #fff; }
+  .milestone-step.active .ms-dot { background: var(--amber); border-color: var(--amber); color: #fff; animation: pulse 2s infinite; }
+  .milestone-step.pending .ms-dot { background: #fff; border-color: var(--border); }
+
+  @keyframes pulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(212,130,10,0.4); }
+    50% { box-shadow: 0 0 0 8px rgba(212,130,10,0); }
+  }
+
+  .ms-label { font-size: 11px; font-weight: 600; color: var(--text-muted); margin-top: 10px; text-align: center; }
+  .milestone-step.done .ms-label { color: var(--teal); }
+  .milestone-step.active .ms-label { color: var(--amber); }
+
+  .ms-amount { font-size: 12px; color: var(--stone); margin-top: 2px; }
+
+  /* ─── MILESTONE VERIFICATION CARD ─── */
+  .verification-card {
+    background: #fff;
+    border: 2px solid var(--amber);
+    border-radius: var(--radius);
+    padding: 24px;
+    margin-bottom: 16px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .verification-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--amber), var(--brick-light));
+  }
+
+  .photo-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin: 16px 0;
+  }
+
+  .photo-thumb {
+    aspect-ratio: 4/3;
+    border-radius: 8px;
+    overflow: hidden;
+    background: var(--sand-dark);
+    position: relative;
+    cursor: pointer;
+  }
+
+  .photo-thumb-inner {
+    width: 100%; height: 100%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 28px;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .photo-label { font-size: 10px; color: var(--text-muted); font-weight: 500; }
+
+  .review-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 20px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+  }
+
+  /* ─── BUILDER PROFILE ─── */
+  .builder-profile-header {
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+    margin-bottom: 20px;
+  }
+
+  .builder-avatar {
+    width: 72px; height: 72px;
+    border-radius: 16px;
+    background: var(--brick);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'DM Serif Display', serif;
+    font-size: 28px;
+    color: #fff;
+    flex-shrink: 0;
+  }
+
+  .stars { color: var(--amber); font-size: 14px; }
+  .stars-count { font-size: 12px; color: var(--text-muted); margin-left: 4px; }
+
+  .spec-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+  .spec-tag {
+    font-size: 11px;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 6px;
+    background: var(--sand);
+    color: var(--stone);
+    border: 1px solid var(--sand-dark);
+  }
+
+  /* ─── BID CARD ─── */
+  .bid-card {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    transition: all 0.2s;
+    cursor: pointer;
+  }
+  .bid-card:hover { border-color: var(--brick); box-shadow: var(--shadow); }
+
+  .bid-amount {
+    font-family: 'DM Serif Display', serif;
+    font-size: 24px;
+    color: var(--charcoal);
+    white-space: nowrap;
+  }
+
+  .bid-details { flex: 1; }
+  .bid-name { font-weight: 600; font-size: 14px; margin-bottom: 2px; }
+  .bid-meta { font-size: 12px; color: var(--text-muted); }
+
+  /* ─── ESCROW BANNER ─── */
+  .escrow-banner {
+    background: linear-gradient(135deg, var(--charcoal), #2D2A26);
+    border-radius: var(--radius);
+    padding: 20px 24px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 24px;
+    color: #fff;
+  }
+
+  .escrow-icon {
+    width: 48px; height: 48px;
+    background: rgba(192,68,30,0.3);
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px;
+    flex-shrink: 0;
+  }
+
+  .escrow-text h4 { font-size: 15px; font-weight: 600; margin-bottom: 4px; }
+  .escrow-text p { font-size: 12px; color: rgba(255,255,255,0.6); line-height: 1.5; }
+
+  /* ─── NEGOTIATION CHAT ─── */
+  .chat-box {
+    background: #F9F6F0;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    height: 280px;
+    overflow-y: auto;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .msg {
+    max-width: 75%;
+    padding: 10px 14px;
+    border-radius: 12px;
+    font-size: 13px;
+    line-height: 1.5;
+  }
+
+  .msg-owner { background: var(--teal); color: #fff; align-self: flex-end; border-bottom-right-radius: 4px; }
+  .msg-builder { background: #fff; color: var(--charcoal); border: 1px solid var(--border); align-self: flex-start; border-bottom-left-radius: 4px; }
+  .msg-time { font-size: 10px; opacity: 0.6; margin-top: 4px; }
+
+  .chat-input-row {
+    display: flex;
+    gap: 8px;
+    margin-top: 12px;
+  }
+
+  .chat-input {
+    flex: 1;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 10px 14px;
+    font-size: 13px;
+    font-family: 'DM Sans', sans-serif;
+    background: #fff;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .chat-input:focus { border-color: var(--brick); }
+
+  /* ─── LAND PRICE ─── */
+  .land-map {
+    background: linear-gradient(135deg, #E8F5F3, #F0EDE8);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+    min-height: 200px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+
+  .land-area {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px;
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .land-area:hover { transform: translateY(-2px); box-shadow: var(--shadow); }
+
+  .land-area-name { font-size: 13px; font-weight: 600; margin-bottom: 4px; }
+  .land-price { font-family: 'DM Serif Display', serif; font-size: 18px; color: var(--charcoal); }
+  .land-unit { font-size: 11px; color: var(--text-muted); }
+  .land-change { font-size: 11px; font-weight: 600; margin-top: 6px; }
+  .land-change.up { color: var(--danger); }
+  .land-change.down { color: var(--teal); }
+  .land-bar { height: 3px; border-radius: 100px; margin-top: 10px; }
+
+  /* ─── AI VAASTU ─── */
+  .vaastu-result {
+    background: linear-gradient(135deg, #1C1A18, #2D2A26);
+    border-radius: var(--radius);
+    padding: 24px;
+    color: #fff;
+    margin-top: 16px;
+  }
+
+  .vaastu-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 12px; margin: 16px 0; }
+
+  .vaastu-cell {
+    background: rgba(255,255,255,0.07);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 10px;
+    padding: 12px;
+    text-align: center;
+  }
+
+  .vaastu-direction { font-size: 22px; margin-bottom: 6px; }
+  .vaastu-room { font-size: 11px; color: rgba(255,255,255,0.7); margin-bottom: 4px; }
+  .vaastu-status { font-size: 10px; font-weight: 700; letter-spacing: 0.5px; }
+  .vaastu-ok { color: #5BDA9E; }
+  .vaastu-warn { color: #FFBA40; }
+  .vaastu-bad { color: #FF6B6B; }
+
+  .score-ring {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    margin: 16px 0;
+    background: rgba(255,255,255,0.05);
+    border-radius: 12px;
+    padding: 16px 20px;
+  }
+
+  .ring-circle {
+    width: 72px; height: 72px;
+    border-radius: 50%;
+    background: conic-gradient(var(--teal) 0% 76%, rgba(255,255,255,0.1) 76%);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'DM Serif Display', serif;
+    font-size: 22px;
+    color: #fff;
+    flex-shrink: 0;
+    position: relative;
+  }
+
+  .ring-circle::before {
+    content: '';
+    position: absolute;
+    width: 54px; height: 54px;
+    border-radius: 50%;
+    background: #2D2A26;
+  }
+
+  .ring-num { position: relative; z-index: 1; }
+
+  input[type=range] {
+    width: 100%;
+    accent-color: var(--brick);
+  }
+
+  select, input[type=text], input[type=number], textarea {
+    width: 100%;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 10px 14px;
+    font-size: 13px;
+    font-family: 'DM Sans', sans-serif;
+    background: #fff;
+    outline: none;
+    color: var(--charcoal);
+    transition: border-color 0.2s;
+    margin-top: 4px;
+    display: block;
+  }
+
+  select:focus, input:focus, textarea:focus { border-color: var(--brick); }
+
+  label { font-size: 12px; font-weight: 600; color: var(--stone); text-transform: uppercase; letter-spacing: 0.5px; margin-top: 14px; display: block; }
+
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+
+  /* modal */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(28,26,24,0.6);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+  }
+  .modal-overlay.open { display: flex; }
+
+  .modal {
+    background: #fff;
+    border-radius: var(--radius-lg);
+    padding: 32px;
+    max-width: 560px;
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: var(--shadow-lg);
+  }
+
+  .modal-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 22px;
+    margin-bottom: 6px;
+  }
+
+  .modal-sub { font-size: 13px; color: var(--text-muted); margin-bottom: 20px; }
+
+  .divider { height: 1px; background: var(--border); margin: 20px 0; }
+
+  .success-toast {
+    position: fixed;
+    bottom: 32px;
+    right: 32px;
+    background: var(--charcoal);
+    color: #fff;
+    padding: 14px 20px;
+    border-radius: 12px;
+    font-size: 13px;
+    font-weight: 500;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transform: translateY(80px);
+    opacity: 0;
+    transition: all 0.3s;
+    box-shadow: var(--shadow-lg);
+  }
+
+  .success-toast.show { transform: translateY(0); opacity: 1; }
+
+  .progress-bar-wrap { background: var(--sand-dark); border-radius: 100px; height: 6px; margin-top: 8px; overflow: hidden; }
+  .progress-bar-fill { height: 100%; border-radius: 100px; background: linear-gradient(90deg, var(--teal), #2AA089); transition: width 0.5s; }
+
+  hr { border: none; border-top: 1px solid var(--border); margin: 20px 0; }
+</style>
+</head>
+<body>
+
+<!-- ════════════════════ LANDING ════════════════════ -->
+<div id="landing">
+  <div class="landing-pattern"></div>
+  <div class="landing-accent"></div>
+
+  <nav class="landing-nav">
+    <div class="logo">Build<span>Mate</span></div>
+    <div style="font-size:12px;color:rgba(255,255,255,0.4);">India's Trusted Construction Marketplace</div>
+  </nav>
+
+  <div class="landing-hero">
+    <div class="hero-badge">🏗️ Now live in Hyderabad</div>
+    <h1 class="hero-title">Build your dream home<br>with <em>trusted</em> builders</h1>
+    <p class="hero-sub">Connect with verified builders, get transparent bids, pay only when milestones are approved. Zero cheating. Full control.</p>
+
+    <div class="login-cards">
+      <div class="login-card owner" onclick="login('owner')">
+        <div class="card-icon">🏠</div>
+        <div class="card-title">I'm a Homeowner</div>
+        <p class="card-desc">Post your project, receive bids, verify work at every stage before paying.</p>
+        <button class="card-btn">Enter as Owner →</button>
+      </div>
+      <div class="login-card builder" onclick="login('builder')">
+        <div class="card-icon">👷</div>
+        <div class="card-title">I'm a Builder</div>
+        <p class="card-desc">Showcase your portfolio, bid on projects, get paid reliably after approval.</p>
+        <button class="card-btn">Enter as Builder →</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════ APP SHELL ════════════════════ -->
+<div id="app">
+
+  <header class="app-header">
+    <div class="app-logo">Build<span>Mate</span></div>
+    <div class="header-right">
+      <span class="role-badge" id="roleBadge"></span>
+      <div class="avatar" id="userAvatar"></div>
+      <button class="signout-btn" onclick="signout()">Sign out</button>
+    </div>
+  </header>
+
+  <!-- ── OWNER NAV ── -->
+  <nav class="app-nav" id="ownerNav" style="display:none">
+    <div class="nav-item active" onclick="showTab('ownerDash',this)">📊 Dashboard</div>
+    <div class="nav-item" onclick="showTab('ownerProjects',this)">📋 My Projects</div>
+    <div class="nav-item" onclick="showTab('ownerBids',this)">📩 Bids <span class="nav-badge">3</span></div>
+    <div class="nav-item" onclick="showTab('ownerMilestones',this)">✅ Milestones</div>
+    <div class="nav-item" onclick="showTab('ownerLand',this)">📍 Land Prices</div>
+    <div class="nav-item" onclick="showTab('ownerVaastu',this)">🔮 Vaastu AI</div>
+  </nav>
+
+  <!-- ── BUILDER NAV ── -->
+  <nav class="app-nav" id="builderNav" style="display:none">
+    <div class="nav-item active" onclick="showTab('builderDash',this)">📊 Dashboard</div>
+    <div class="nav-item" onclick="showTab('builderLeads',this)">🔍 Browse Jobs</div>
+    <div class="nav-item" onclick="showTab('builderProjects',this)">🔨 Active Projects</div>
+    <div class="nav-item" onclick="showTab('builderMilestoneSubmit',this)">📸 Submit Work</div>
+    <div class="nav-item" onclick="showTab('builderProfile',this)">👤 My Profile</div>
+    <div class="nav-item" onclick="showTab('builderEarnings',this)">💰 Earnings</div>
+  </nav>
+
+  <div class="app-content">
+
+    <!-- ══════════ OWNER DASHBOARD ══════════ -->
+    <div class="tab-panel active" id="ownerDash">
+      <div class="page-title">Good morning, Priya 👋</div>
+      <div class="page-sub">Your home construction is 42% complete. 1 milestone awaiting your review.</div>
+
+      <div style="background:linear-gradient(135deg,#FEF3DC,#FFF8ED);border:1px solid #F5DCA0;border-radius:var(--radius);padding:16px 20px;margin-bottom:20px;display:flex;align-items:center;gap:12px;">
+        <span style="font-size:20px;">⏳</span>
+        <div>
+          <div style="font-size:13px;font-weight:600;color:var(--amber);">Milestone 3 needs your review</div>
+          <div style="font-size:12px;color:var(--text-muted);">Plumbing work submitted by Ramesh Constructions · ₹1,20,000 in escrow</div>
+        </div>
+        <button class="btn btn-primary btn-sm" style="margin-left:auto" onclick="showTab('ownerMilestones',document.querySelector('#ownerNav .nav-item:nth-child(4)'))">Review Now →</button>
+      </div>
+
+      <div class="grid-3" style="margin-bottom:20px">
+        <div class="stat-card">
+          <div class="stat-label">Total Budget</div>
+          <div class="stat-value">₹48L</div>
+          <div class="stat-sub">3-BHK, Banjara Hills</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Paid So Far</div>
+          <div class="stat-value">₹18.5L</div>
+          <div class="stat-sub" style="color:var(--teal)">↑ 3 milestones approved</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">In Escrow</div>
+          <div class="stat-value">₹1.2L</div>
+          <div class="stat-sub" style="color:var(--amber)">Awaiting your review</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <div style="font-weight:600;margin-bottom:4px;">Project Progress</div>
+            <div style="font-size:12px;color:var(--text-muted)">Ramesh Constructions · Started 14 Jan 2025</div>
+          </div>
+          <span class="badge badge-warning">In Progress</span>
+        </div>
+        <div class="milestone-track">
+          <div class="milestone-step done">
+            <div class="ms-dot">✓</div>
+            <div class="ms-label">Foundation</div>
+            <div class="ms-amount">₹6L</div>
+          </div>
+          <div class="milestone-step done">
+            <div class="ms-dot">✓</div>
+            <div class="ms-label">Structure</div>
+            <div class="ms-amount">₹8L</div>
+          </div>
+          <div class="milestone-step done">
+            <div class="ms-dot">✓</div>
+            <div class="ms-label">Electrical</div>
+            <div class="ms-amount">₹4.5L</div>
+          </div>
+          <div class="milestone-step active">
+            <div class="ms-dot">!</div>
+            <div class="ms-label">Plumbing</div>
+            <div class="ms-amount">₹1.2L</div>
+          </div>
+          <div class="milestone-step pending">
+            <div class="ms-dot">5</div>
+            <div class="ms-label">Flooring</div>
+            <div class="ms-amount">₹8L</div>
+          </div>
+          <div class="milestone-step pending">
+            <div class="ms-dot">6</div>
+            <div class="ms-label">Painting</div>
+            <div class="ms-amount">₹4L</div>
+          </div>
+          <div class="milestone-step pending">
+            <div class="ms-dot">7</div>
+            <div class="ms-label">Handover</div>
+            <div class="ms-amount">₹16.3L</div>
+          </div>
+        </div>
+        <div class="progress-bar-wrap"><div class="progress-bar-fill" style="width:42%"></div></div>
+        <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--text-muted);margin-top:6px"><span>42% complete</span><span>₹29.5L remaining</span></div>
+      </div>
+    </div>
+
+    <!-- ══════════ OWNER PROJECTS ══════════ -->
+    <div class="tab-panel" id="ownerProjects">
+      <div class="page-title">My Projects</div>
+      <div class="page-sub">Manage all your construction and renovation projects.</div>
+      <button class="btn btn-primary" style="margin-bottom:20px" onclick="document.getElementById('newProjectModal').classList.add('open')">+ Post New Project</button>
+
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <div style="font-weight:600;font-size:15px">3-BHK Full Construction · Banjara Hills</div>
+            <div style="font-size:12px;color:var(--text-muted);margin-top:4px">Plot: 200 sq yd · Budget: ₹48L · Posted 10 Jan 2025</div>
+            <div class="spec-tags">
+              <span class="spec-tag">Foundation</span>
+              <span class="spec-tag">Structure</span>
+              <span class="spec-tag">Interior</span>
+              <span class="spec-tag">Plumbing</span>
+              <span class="spec-tag">Electrical</span>
+            </div>
+          </div>
+          <span class="badge badge-warning">In Progress</span>
+        </div>
+        <div style="font-size:13px;color:var(--text-muted)">Builder: Ramesh Constructions · 4 bids received · Milestone 4/7 active</div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <div style="font-weight:600;font-size:15px">Bathroom Renovation · Jubilee Hills</div>
+            <div style="font-size:12px;color:var(--text-muted);margin-top:4px">Scope: Plumbing + Tiling · Budget: ₹2.5L · Posted 2 Feb 2025</div>
+            <div class="spec-tags">
+              <span class="spec-tag">Plumbing</span>
+              <span class="spec-tag">Tiling</span>
+            </div>
+          </div>
+          <span class="badge badge-info">Receiving Bids</span>
+        </div>
+        <div style="font-size:13px;color:var(--text-muted)">3 bids received · Review and shortlist below</div>
+        <button class="btn btn-outline btn-sm" style="margin-top:12px" onclick="showTab('ownerBids',document.querySelector('#ownerNav .nav-item:nth-child(3)'))">View Bids →</button>
+      </div>
+    </div>
+
+    <!-- ══════════ OWNER BIDS ══════════ -->
+    <div class="tab-panel" id="ownerBids">
+      <div class="page-title">Bids Received</div>
+      <div class="page-sub">Bathroom Renovation · Jubilee Hills — Compare and negotiate with builders.</div>
+
+      <div class="escrow-banner">
+        <div class="escrow-icon">🔒</div>
+        <div class="escrow-text">
+          <h4>Your money stays protected</h4>
+          <p>You only pay per milestone. BuildMate holds funds in escrow and releases them only after you approve each stage of work.</p>
+        </div>
+      </div>
+
+      <div class="bid-card" onclick="document.getElementById('negotiateModal').classList.add('open')">
+        <div>
+          <div class="builder-avatar" style="width:48px;height:48px;font-size:20px;border-radius:12px">R</div>
+        </div>
+        <div class="bid-details">
+          <div class="bid-name">Ramesh Constructions</div>
+          <div class="bid-meta">⭐ 4.8 · 47 projects · Est. 18 days · Hyderabad</div>
+          <div class="spec-tags" style="margin-top:6px">
+            <span class="spec-tag">Plumbing</span><span class="spec-tag">Tiling</span><span class="spec-tag">Waterproofing</span>
+          </div>
+        </div>
+        <div style="text-align:right">
+          <div class="bid-amount">₹2,10,000</div>
+          <div style="font-size:11px;color:var(--text-muted)">4 milestones</div>
+          <button class="btn btn-outline btn-sm" style="margin-top:8px">Negotiate</button>
+        </div>
+      </div>
+
+      <div class="bid-card">
+        <div>
+          <div class="builder-avatar" style="width:48px;height:48px;font-size:20px;border-radius:12px;background:var(--teal)">S</div>
+        </div>
+        <div class="bid-details">
+          <div class="bid-name">SK Interiors & Civil</div>
+          <div class="bid-meta">⭐ 4.5 · 29 projects · Est. 14 days · Secunderabad</div>
+          <div class="spec-tags" style="margin-top:6px">
+            <span class="spec-tag">Plumbing</span><span class="spec-tag">Tiling</span>
+          </div>
+        </div>
+        <div style="text-align:right">
+          <div class="bid-amount">₹1,95,000</div>
+          <div style="font-size:11px;color:var(--text-muted)">3 milestones</div>
+          <button class="btn btn-outline btn-sm" style="margin-top:8px">Negotiate</button>
+        </div>
+      </div>
+
+      <div class="bid-card">
+        <div>
+          <div class="builder-avatar" style="width:48px;height:48px;font-size:20px;border-radius:12px;background:var(--amber)">V</div>
+        </div>
+        <div class="bid-details">
+          <div class="bid-name">Vijay Build Solutions</div>
+          <div class="bid-meta">⭐ 4.2 · 15 projects · Est. 21 days · LB Nagar</div>
+          <div class="spec-tags" style="margin-top:6px">
+            <span class="spec-tag">Plumbing</span><span class="spec-tag">Tiling</span><span class="spec-tag">Painting</span>
+          </div>
+        </div>
+        <div style="text-align:right">
+          <div class="bid-amount">₹2,40,000</div>
+          <div style="font-size:11px;color:var(--text-muted)">5 milestones</div>
+          <button class="btn btn-outline btn-sm" style="margin-top:8px">Negotiate</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════ OWNER MILESTONES (THE STAR FEATURE) ══════════ -->
+    <div class="tab-panel" id="ownerMilestones">
+      <div class="page-title">Milestone Verification</div>
+      <div class="page-sub">Review submitted work before releasing payment. You hold full control.</div>
+
+      <!-- Escrow info -->
+      <div style="background:var(--success-light);border:1px solid #A7D9BE;border-radius:var(--radius);padding:14px 20px;margin-bottom:20px;display:flex;gap:12px;align-items:center">
+        <span style="font-size:18px">🔐</span>
+        <div style="font-size:13px;color:var(--success)"><strong>₹1,20,000 is safely held in escrow</strong> — it will only be released when you approve Milestone 4 below.</div>
+      </div>
+
+      <!-- Completed milestone -->
+      <div class="card" style="border-left:4px solid var(--teal)">
+        <div class="card-header">
+          <div>
+            <div style="font-weight:600">Milestone 3 — Electrical Work</div>
+            <div style="font-size:12px;color:var(--text-muted);margin-top:2px">Completed 28 Jan · ₹4,50,000 released</div>
+          </div>
+          <span class="badge badge-success">✓ Approved by you</span>
+        </div>
+        <div style="font-size:13px;color:var(--text-muted)">You reviewed and approved the electrical wiring, DB board installation, and point work on 28 Jan 2025.</div>
+      </div>
+
+      <!-- ACTIVE MILESTONE VERIFICATION -->
+      <div class="verification-card">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
+          <div style="font-weight:700;font-size:16px">Milestone 4 — Plumbing Work</div>
+          <span class="badge badge-warning">⏳ Awaiting Your Review</span>
+        </div>
+        <div style="font-size:12px;color:var(--text-muted);margin-bottom:16px">Submitted by Ramesh Constructions on 12 Feb 2025 · ₹1,20,000 in escrow</div>
+
+        <div style="font-size:13px;font-weight:600;color:var(--stone);margin-bottom:8px;text-transform:uppercase;letter-spacing:0.5px">Builder's Report</div>
+        <div style="font-size:13px;color:var(--charcoal);line-height:1.7;background:var(--sand);border-radius:10px;padding:14px;margin-bottom:16px">
+          All plumbing points completed as per plan. Hot & cold water lines laid for kitchen, 2 bathrooms, and utility. Concealed pipes pressure-tested to 150 PSI — no leaks detected. All drain lines slope-tested. Materials used: Astral CPVC for hot water, Supreme UPVC for drainage. Photos attached below.
+        </div>
+
+        <div style="font-size:13px;font-weight:600;color:var(--stone);margin-bottom:8px;text-transform:uppercase;letter-spacing:0.5px">Work Photos (6 submitted)</div>
+        <div class="photo-grid">
+          <div class="photo-thumb"><div class="photo-thumb-inner">🚿<span class="photo-label">Hot water line</span></div></div>
+          <div class="photo-thumb"><div class="photo-thumb-inner">🔧<span class="photo-label">Pressure test</span></div></div>
+          <div class="photo-thumb"><div class="photo-thumb-inner">🪠<span class="photo-label">Drain slope</span></div></div>
+          <div class="photo-thumb"><div class="photo-thumb-inner">🏗️<span class="photo-label">Kitchen points</span></div></div>
+          <div class="photo-thumb"><div class="photo-thumb-inner">🛁<span class="photo-label">Bath 1 complete</span></div></div>
+          <div class="photo-thumb"><div class="photo-thumb-inner">📏<span class="photo-label">Pipe mapping</span></div></div>
+        </div>
+
+        <div style="margin-top:16px">
+          <label>Your Comments (optional)</label>
+          <textarea rows="2" placeholder="E.g. Hot water pipe near kitchen looks exposed — please cover before next stage..."></textarea>
+        </div>
+
+        <div class="review-actions">
+          <button class="btn btn-success" style="flex:1" onclick="approveMilestone()">✅ Approve & Release ₹1,20,000</button>
+          <button class="btn btn-danger" style="flex:1" onclick="rejectMilestone()">❌ Reject — Request Fix</button>
+          <button class="btn btn-outline" onclick="document.getElementById('disputeModal').classList.add('open')">🏛 Raise Dispute</button>
+        </div>
+      </div>
+
+      <!-- Future milestones -->
+      <div class="card" style="opacity:0.6">
+        <div class="card-header">
+          <div>
+            <div style="font-weight:600">Milestone 5 — Flooring</div>
+            <div style="font-size:12px;color:var(--text-muted)">Locked — unlocks after Milestone 4 is approved · ₹8,00,000</div>
+          </div>
+          <span class="badge badge-neutral">🔒 Locked</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════ OWNER LAND PRICES ══════════ -->
+    <div class="tab-panel" id="ownerLand">
+      <div class="page-title">Land Price Tracker</div>
+      <div class="page-sub">Live residential plot prices across Hyderabad. Updated daily.</div>
+
+      <div style="display:flex;gap:12px;margin-bottom:16px;flex-wrap:wrap">
+        <select style="width:auto;margin-top:0"><option>All Areas</option><option>West Hyderabad</option><option>East Hyderabad</option></select>
+        <select style="width:auto;margin-top:0"><option>Sq Yd</option><option>Sq Ft</option></select>
+        <button class="btn btn-outline btn-sm">🔔 Set Price Alert</button>
+      </div>
+
+      <div class="land-map">
+        <div class="land-area">
+          <div class="land-area-name">Banjara Hills</div>
+          <div class="land-price">₹1,24,000</div>
+          <div class="land-unit">per sq yd</div>
+          <div class="land-change up">▲ 3.2% this month</div>
+          <div class="land-bar" style="background:linear-gradient(90deg,#E85D30 85%,var(--border) 85%)"></div>
+        </div>
+        <div class="land-area">
+          <div class="land-area-name">Jubilee Hills</div>
+          <div class="land-price">₹1,08,000</div>
+          <div class="land-unit">per sq yd</div>
+          <div class="land-change up">▲ 1.8% this month</div>
+          <div class="land-bar" style="background:linear-gradient(90deg,#E85D30 75%,var(--border) 75%)"></div>
+        </div>
+        <div class="land-area">
+          <div class="land-area-name">Gachibowli</div>
+          <div class="land-price">₹78,000</div>
+          <div class="land-unit">per sq yd</div>
+          <div class="land-change down">▼ 0.5% this month</div>
+          <div class="land-bar" style="background:linear-gradient(90deg,var(--teal) 60%,var(--border) 60%)"></div>
+        </div>
+        <div class="land-area">
+          <div class="land-area-name">Kondapur</div>
+          <div class="land-price">₹65,000</div>
+          <div class="land-unit">per sq yd</div>
+          <div class="land-change up">▲ 2.1% this month</div>
+          <div class="land-bar" style="background:linear-gradient(90deg,#E85D30 50%,var(--border) 50%)"></div>
+        </div>
+        <div class="land-area">
+          <div class="land-area-name">Miyapur</div>
+          <div class="land-price">₹38,000</div>
+          <div class="land-unit">per sq yd</div>
+          <div class="land-change down">▼ 1.2% this month</div>
+          <div class="land-bar" style="background:linear-gradient(90deg,var(--teal) 30%,var(--border) 30%)"></div>
+        </div>
+        <div class="land-area">
+          <div class="land-area-name">LB Nagar</div>
+          <div class="land-price">₹42,000</div>
+          <div class="land-unit">per sq yd</div>
+          <div class="land-change up">▲ 0.8% this month</div>
+          <div class="land-bar" style="background:linear-gradient(90deg,#E85D30 33%,var(--border) 33%)"></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div style="font-weight:600;margin-bottom:12px">AI Price Forecast (Next 3 months)</div>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;font-size:13px">
+          <div style="background:var(--danger-light);border-radius:10px;padding:12px">
+            <div style="font-weight:600;color:var(--danger)">Banjara Hills</div>
+            <div style="color:var(--text-muted);margin-top:4px">Expected to rise 4–6% — good time to finalize plot purchase.</div>
+          </div>
+          <div style="background:var(--success-light);border-radius:10px;padding:12px">
+            <div style="font-weight:600;color:var(--success)">Miyapur</div>
+            <div style="color:var(--text-muted);margin-top:4px">Stable or slight dip expected — wait 60 days for better deal.</div>
+          </div>
+          <div style="background:var(--amber-light);border-radius:10px;padding:12px">
+            <div style="font-weight:600;color:var(--amber)">Gachibowli</div>
+            <div style="color:var(--text-muted);margin-top:4px">Near metro expansion — likely to appreciate post Q2 2025.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════ VAASTU AI ══════════ -->
+    <div class="tab-panel" id="ownerVaastu">
+      <div class="page-title">AI Vaastu Predictor</div>
+      <div class="page-sub">Enter your plot details for a Vaastu Shastra analysis powered by AI.</div>
+
+      <div class="card">
+        <div class="form-row">
+          <div>
+            <label>Plot Facing Direction</label>
+            <select id="vaastuDir"><option>East</option><option>North</option><option>West</option><option>South</option><option>North-East</option><option>North-West</option></select>
+          </div>
+          <div>
+            <label>Plot Shape</label>
+            <select><option>Square</option><option>Rectangle</option><option>Irregular</option><option>L-shape</option></select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div>
+            <label>Plot Width (ft)</label>
+            <input type="number" placeholder="e.g. 40" value="40">
+          </div>
+          <div>
+            <label>Plot Depth (ft)</label>
+            <input type="number" placeholder="e.g. 60" value="60">
+          </div>
+        </div>
+        <div>
+          <label>Number of Floors</label>
+          <select><option>Ground floor</option><option>G+1</option><option>G+2</option><option>G+3</option></select>
+        </div>
+        <div style="margin-top:20px">
+          <button class="btn btn-primary" onclick="runVaastu()">🔮 Analyse Vaastu →</button>
+        </div>
+      </div>
+
+      <div id="vaastuResult" style="display:none">
+        <div class="vaastu-result">
+          <div style="font-family:'DM Serif Display',serif;font-size:20px;margin-bottom:4px">Vaastu Analysis Report</div>
+          <div style="font-size:12px;color:rgba(255,255,255,0.5);margin-bottom:16px">East-facing · 40×60 ft · Square plot</div>
+
+          <div class="score-ring">
+            <div class="ring-circle"><span class="ring-num">76</span></div>
+            <div>
+              <div style="font-weight:600;font-size:16px">Score: 76 / 100 — Good</div>
+              <div style="font-size:12px;color:rgba(255,255,255,0.6);margin-top:4px">East-facing plots are considered auspicious. A few adjustments will bring this to Excellent.</div>
+            </div>
+          </div>
+
+          <div class="vaastu-grid">
+            <div class="vaastu-cell">
+              <div class="vaastu-direction">🌅</div>
+              <div class="vaastu-room">Main Entrance</div>
+              <div class="vaastu-status vaastu-ok">✓ IDEAL</div>
+            </div>
+            <div class="vaastu-cell">
+              <div class="vaastu-direction">🍳</div>
+              <div class="vaastu-room">Kitchen → SE</div>
+              <div class="vaastu-status vaastu-ok">✓ GOOD</div>
+            </div>
+            <div class="vaastu-cell">
+              <div class="vaastu-direction">🛏</div>
+              <div class="vaastu-room">Master Bed → SW</div>
+              <div class="vaastu-status vaastu-ok">✓ IDEAL</div>
+            </div>
+            <div class="vaastu-cell">
+              <div class="vaastu-direction">🚽</div>
+              <div class="vaastu-room">Toilet → NW</div>
+              <div class="vaastu-status vaastu-warn">⚠ AVOID NE</div>
+            </div>
+          </div>
+
+          <div style="background:rgba(255,255,255,0.07);border-radius:10px;padding:16px;margin-top:8px">
+            <div style="font-size:13px;font-weight:600;margin-bottom:10px">AI Recommendations</div>
+            <div style="font-size:12px;color:rgba(255,255,255,0.75);line-height:1.8">
+              ✅ Place main entrance in the East or North-East zone — highly auspicious.<br>
+              ✅ Kitchen in South-East (fire element) — ideal placement for health & prosperity.<br>
+              ⚠️ Avoid placing bathroom/toilet in the North-East corner — relocate to NW or SE.<br>
+              ⚠️ Do not place a staircase in the North-East or center of the house.<br>
+              💡 Plant Tulsi or Neem at the North-East corner of the plot for positive energy.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════ BUILDER DASHBOARD ══════════ -->
+    <div class="tab-panel" id="builderDash">
+      <div class="page-title">Welcome back, Ramesh 👷</div>
+      <div class="page-sub">You have 2 active projects and ₹1.2L pending owner approval.</div>
+
+      <div class="grid-3" style="margin-bottom:20px">
+        <div class="stat-card">
+          <div class="stat-label">This Month Earned</div>
+          <div class="stat-value">₹4.8L</div>
+          <div class="stat-sub" style="color:var(--teal)">After 8% platform fee</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Active Projects</div>
+          <div class="stat-value">2</div>
+          <div class="stat-sub">3 bids pending response</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Rating</div>
+          <div class="stat-value">4.8 ⭐</div>
+          <div class="stat-sub">47 completed projects</div>
+        </div>
+      </div>
+
+      <div style="background:var(--amber-light);border:1px solid #F5DCA0;border-radius:var(--radius);padding:16px 20px;display:flex;gap:12px;align-items:center;margin-bottom:16px">
+        <span style="font-size:20px">⏳</span>
+        <div>
+          <div style="font-size:13px;font-weight:600;color:var(--amber)">Awaiting owner approval — ₹1,20,000 in escrow</div>
+          <div style="font-size:12px;color:var(--text-muted)">Plumbing work submitted · Priya's 3-BHK · Banjara Hills · Submitted 12 Feb</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════ BUILDER LEADS ══════════ -->
+    <div class="tab-panel" id="builderLeads">
+      <div class="page-title">Browse Open Projects</div>
+      <div class="page-sub">Find projects that match your skills and bid on them.</div>
+
+      <div style="display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap">
+        <select style="width:auto;margin-top:0"><option>All Scopes</option><option>Full Construction</option><option>Interior</option><option>Plumbing</option><option>Electrical</option><option>Painting</option></select>
+        <select style="width:auto;margin-top:0"><option>All Areas</option><option>Banjara Hills</option><option>Gachibowli</option><option>Miyapur</option></select>
+        <select style="width:auto;margin-top:0"><option>Any Budget</option><option>Under ₹5L</option><option>₹5L–₹20L</option><option>Above ₹20L</option></select>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <div style="font-weight:600;font-size:15px">Bathroom Renovation — Jubilee Hills</div>
+            <div style="font-size:12px;color:var(--text-muted);margin-top:4px">Budget: ₹2–2.5L · Scope: Plumbing + Tiling · Expected: 2–3 weeks</div>
+          </div>
+          <span class="badge badge-info">3 bids</span>
+        </div>
+        <div style="font-size:13px;color:var(--text-muted);margin-bottom:12px">Owner wants complete bathroom renovation with concealed plumbing and vitrified tile flooring. Prefer builders with verified portfolio.</div>
+        <button class="btn btn-primary btn-sm" onclick="document.getElementById('bidModal').classList.add('open')">Submit Bid →</button>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <div style="font-weight:600;font-size:15px">Full Interior — 2BHK, Kondapur</div>
+            <div style="font-size:12px;color:var(--text-muted);margin-top:4px">Budget: ₹8–10L · Scope: Interior, False Ceiling, Painting · Expected: 6 weeks</div>
+          </div>
+          <span class="badge badge-warning">1 bid</span>
+        </div>
+        <div style="font-size:13px;color:var(--text-muted);margin-bottom:12px">2 BHK flat, 950 sq ft. Owner wants modular kitchen, wardrobes, pop ceiling and texture painting throughout.</div>
+        <button class="btn btn-primary btn-sm">Submit Bid →</button>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <div style="font-weight:600;font-size:15px">Exterior Painting — Villa, Gachibowli</div>
+            <div style="font-size:12px;color:var(--text-muted);margin-top:4px">Budget: ₹3L · Scope: Exterior Painting + Waterproofing · Expected: 10 days</div>
+          </div>
+          <span class="badge badge-neutral">New</span>
+        </div>
+        <div style="font-size:13px;color:var(--text-muted);margin-bottom:12px">G+1 villa, 2400 sq ft built-up. Full exterior painting with Asian Paints Apex weatherproof. Also needs terrace waterproofing.</div>
+        <button class="btn btn-primary btn-sm">Submit Bid →</button>
+      </div>
+    </div>
+
+    <!-- ══════════ BUILDER SUBMIT WORK ══════════ -->
+    <div class="tab-panel" id="builderMilestoneSubmit">
+      <div class="page-title">Submit Milestone Work</div>
+      <div class="page-sub">Upload photos and a work report. The owner must approve before payment is released.</div>
+
+      <div class="card">
+        <div style="font-weight:600;margin-bottom:4px">Current: Milestone 4 — Plumbing</div>
+        <div style="font-size:12px;color:var(--text-muted);margin-bottom:16px">Project: Priya's 3-BHK · Banjara Hills · ₹1,20,000 on approval</div>
+
+        <label>Work Summary Report</label>
+        <textarea rows="4" placeholder="Describe what work was completed, materials used, and any notes for the owner...">All plumbing points completed as per plan. Hot &amp; cold water lines laid for kitchen, 2 bathrooms, and utility. Concealed pipes pressure-tested to 150 PSI.</textarea>
+
+        <label style="margin-top:16px">Upload Work Photos</label>
+        <div style="border:2px dashed var(--border);border-radius:10px;padding:32px;text-align:center;margin-top:4px;cursor:pointer;transition:all 0.2s" onmouseenter="this.style.borderColor='var(--brick)'" onmouseleave="this.style.borderColor='var(--border)'">
+          <div style="font-size:32px;margin-bottom:8px">📸</div>
+          <div style="font-size:13px;font-weight:600;color:var(--stone)">Click to upload photos</div>
+          <div style="font-size:11px;color:var(--text-muted);margin-top:4px">Max 10 photos · JPG or PNG · Each up to 5MB</div>
+        </div>
+
+        <div style="background:var(--amber-light);border-radius:10px;padding:12px 16px;margin-top:16px;font-size:12px;color:var(--amber);line-height:1.6">
+          ⚠️ <strong>Important:</strong> Once you submit, the owner will review your work. Payment of ₹1,20,000 from escrow will be released only after their approval. Make sure photos clearly show all completed work.
+        </div>
+
+        <div style="margin-top:20px;display:flex;gap:12px">
+          <button class="btn btn-primary" onclick="submitMilestone()">📤 Submit for Review</button>
+          <button class="btn btn-outline">Save Draft</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════ BUILDER ACTIVE PROJECTS ══════════ -->
+    <div class="tab-panel" id="builderProjects">
+      <div class="page-title">Active Projects</div>
+      <div class="page-sub">Track your ongoing work and milestone status.</div>
+
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <div style="font-weight:600;font-size:15px">Priya's 3-BHK Construction · Banjara Hills</div>
+            <div style="font-size:12px;color:var(--text-muted);margin-top:2px">Started: 14 Jan · Contract Value: ₹48L · Net: ₹44.16L (after 8% fee)</div>
+          </div>
+          <span class="badge badge-warning">Pending Approval</span>
+        </div>
+        <div class="milestone-track">
+          <div class="milestone-step done"><div class="ms-dot">✓</div><div class="ms-label">Foundation</div><div class="ms-amount">✓ Paid</div></div>
+          <div class="milestone-step done"><div class="ms-dot">✓</div><div class="ms-label">Structure</div><div class="ms-amount">✓ Paid</div></div>
+          <div class="milestone-step done"><div class="ms-dot">✓</div><div class="ms-label">Electrical</div><div class="ms-amount">✓ Paid</div></div>
+          <div class="milestone-step active"><div class="ms-dot">!</div><div class="ms-label">Plumbing</div><div class="ms-amount">⏳ Review</div></div>
+          <div class="milestone-step pending"><div class="ms-dot">5</div><div class="ms-label">Flooring</div><div class="ms-amount">Locked</div></div>
+          <div class="milestone-step pending"><div class="ms-dot">6</div><div class="ms-label">Painting</div><div class="ms-amount">Locked</div></div>
+          <div class="milestone-step pending"><div class="ms-dot">7</div><div class="ms-label">Handover</div><div class="ms-amount">Locked</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════ BUILDER PROFILE ══════════ -->
+    <div class="tab-panel" id="builderProfile">
+      <div class="page-title">My Profile</div>
+      <div class="page-sub">This is what homeowners see when they view your profile.</div>
+
+      <div class="card">
+        <div class="builder-profile-header">
+          <div class="builder-avatar">R</div>
+          <div style="flex:1">
+            <div style="font-family:'DM Serif Display',serif;font-size:22px">Ramesh Constructions</div>
+            <div style="font-size:13px;color:var(--text-muted);margin-top:2px">Est. 2010 · RERA Registered · GST Verified</div>
+            <div style="margin-top:6px"><span class="stars">★★★★★</span><span class="stars-count">4.8 (47 reviews)</span></div>
+            <div class="spec-tags">
+              <span class="spec-tag">Full Construction</span>
+              <span class="spec-tag">Plumbing</span>
+              <span class="spec-tag">Electrical</span>
+              <span class="spec-tag">Flooring</span>
+              <span class="spec-tag">Painting</span>
+            </div>
+          </div>
+          <span class="badge badge-success">✓ Verified Builder</span>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="grid-3">
+          <div style="text-align:center">
+            <div style="font-family:'DM Serif Display',serif;font-size:28px;color:var(--brick)">47</div>
+            <div style="font-size:12px;color:var(--text-muted)">Projects Completed</div>
+          </div>
+          <div style="text-align:center">
+            <div style="font-family:'DM Serif Display',serif;font-size:28px;color:var(--brick)">₹4.2Cr</div>
+            <div style="font-size:12px;color:var(--text-muted)">Total Work Value</div>
+          </div>
+          <div style="text-align:center">
+            <div style="font-family:'DM Serif Display',serif;font-size:28px;color:var(--brick)">100%</div>
+            <div style="font-size:12px;color:var(--text-muted)">Milestone Approval Rate</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════ BUILDER EARNINGS ══════════ -->
+    <div class="tab-panel" id="builderEarnings">
+      <div class="page-title">Earnings & Commission</div>
+      <div class="page-sub">Your payout history and upcoming releases.</div>
+
+      <div class="escrow-banner">
+        <div class="escrow-icon">💰</div>
+        <div class="escrow-text">
+          <h4>₹1,20,000 in escrow — awaiting owner approval</h4>
+          <p>Once Priya approves Milestone 4, ₹1,10,400 will be credited to your account (after 8% platform fee).</p>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="stat-card">
+          <div class="stat-label">Total Earned (Lifetime)</div>
+          <div class="stat-value">₹38.6L</div>
+          <div class="stat-sub">After platform commission</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Platform Commission (8%)</div>
+          <div class="stat-value">₹3.4L</div>
+          <div class="stat-sub">Paid to BuildMate</div>
+        </div>
+      </div>
+
+      <div class="card" style="margin-top:16px">
+        <div style="font-weight:600;margin-bottom:16px">Recent Payouts</div>
+        <div style="display:flex;flex-direction:column;gap:10px">
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:12px;background:var(--success-light);border-radius:10px">
+            <div><div style="font-size:13px;font-weight:600">Milestone 3 — Electrical</div><div style="font-size:11px;color:var(--text-muted)">Priya's 3-BHK · 28 Jan 2025</div></div>
+            <div style="text-align:right"><div style="font-weight:600;color:var(--success)">+₹4,14,000</div><div style="font-size:11px;color:var(--text-muted)">After 8% fee</div></div>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:12px;background:var(--success-light);border-radius:10px">
+            <div><div style="font-size:13px;font-weight:600">Milestone 2 — Structure</div><div style="font-size:11px;color:var(--text-muted)">Priya's 3-BHK · 05 Jan 2025</div></div>
+            <div style="text-align:right"><div style="font-weight:600;color:var(--success)">+₹7,36,000</div><div style="font-size:11px;color:var(--text-muted)">After 8% fee</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /app-content -->
+</div><!-- /app -->
+
+<!-- ══ MODALS ══ -->
+
+<!-- Negotiate Modal -->
+<div class="modal-overlay" id="negotiateModal">
+  <div class="modal">
+    <div class="modal-title">Negotiate with Ramesh Constructions</div>
+    <div class="modal-sub">Bathroom Renovation · Jubilee Hills</div>
+    <div style="display:flex;justify-content:space-between;background:var(--sand);border-radius:10px;padding:12px 16px;margin-bottom:16px">
+      <div><div style="font-size:11px;color:var(--text-muted)">Current Bid</div><div style="font-family:'DM Serif Display',serif;font-size:22px">₹2,10,000</div></div>
+      <div><div style="font-size:11px;color:var(--text-muted)">Timeline</div><div style="font-family:'DM Serif Display',serif;font-size:22px">18 days</div></div>
+    </div>
+    <div class="chat-box" id="chatBox">
+      <div class="msg msg-builder">Hi Priya, thank you for considering our bid. We've quoted ₹2,10,000 which includes all materials and 2-year warranty on plumbing.<div class="msg-time">10:32 AM</div></div>
+      <div class="msg msg-owner">Thanks Ramesh! Can you bring it down to ₹1,90,000? And can you do it in 14 days?<div class="msg-time">10:45 AM</div></div>
+      <div class="msg msg-builder">I can do ₹2,00,000 and complete in 16 days. Below that, we'll have to compromise on pipe quality.<div class="msg-time">11:02 AM</div></div>
+    </div>
+    <div class="chat-input-row">
+      <input class="chat-input" id="chatInput" placeholder="Type your message or counter-offer..." onkeypress="if(event.key==='Enter')sendMsg()">
+      <button class="btn btn-primary btn-sm" onclick="sendMsg()">Send</button>
+    </div>
+    <div class="divider"></div>
+    <div style="display:flex;gap:10px">
+      <button class="btn btn-success" style="flex:1" onclick="document.getElementById('negotiateModal').classList.remove('open');showToast('✅ Ramesh Constructions accepted! Project created.')">Accept Bid & Start</button>
+      <button class="btn btn-outline" onclick="document.getElementById('negotiateModal').classList.remove('open')">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- Bid Modal (Builder) -->
+<div class="modal-overlay" id="bidModal">
+  <div class="modal">
+    <div class="modal-title">Submit Your Bid</div>
+    <div class="modal-sub">Bathroom Renovation · Jubilee Hills</div>
+    <label>Your Total Quote (₹)</label>
+    <input type="number" placeholder="e.g. 195000">
+    <label>Estimated Days to Complete</label>
+    <input type="number" placeholder="e.g. 14">
+    <label>Number of Milestones</label>
+    <select><option>2</option><option>3</option><option>4</option><option>5</option></select>
+    <label>Bid Notes</label>
+    <textarea rows="3" placeholder="Describe what's included, materials, warranty, etc."></textarea>
+    <div style="margin-top:20px;display:flex;gap:10px">
+      <button class="btn btn-primary" style="flex:1" onclick="document.getElementById('bidModal').classList.remove('open');showToast('📩 Bid submitted! Owner will respond within 24 hours.')">Submit Bid</button>
+      <button class="btn btn-outline" onclick="document.getElementById('bidModal').classList.remove('open')">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- New Project Modal -->
+<div class="modal-overlay" id="newProjectModal">
+  <div class="modal">
+    <div class="modal-title">Post a New Project</div>
+    <div class="modal-sub">Tell builders what you need done.</div>
+    <label>Project Type</label>
+    <select><option>Full House Construction</option><option>Interior Only</option><option>Painting</option><option>Plumbing</option><option>Electrical</option><option>Flooring</option><option>Roofing</option><option>Bathroom Renovation</option><option>Kitchen Remodel</option></select>
+    <label>Location (Area, City)</label>
+    <input type="text" placeholder="e.g. Kondapur, Hyderabad">
+    <div class="form-row">
+      <div>
+        <label>Plot Size (sq yd)</label>
+        <input type="number" placeholder="e.g. 200">
+      </div>
+      <div>
+        <label>Budget (₹)</label>
+        <input type="number" placeholder="e.g. 4800000">
+      </div>
+    </div>
+    <label>Project Description</label>
+    <textarea rows="3" placeholder="Describe your requirements, preferred materials, timeline, etc."></textarea>
+    <div style="margin-top:20px;display:flex;gap:10px">
+      <button class="btn btn-primary" style="flex:1" onclick="document.getElementById('newProjectModal').classList.remove('open');showToast('🎉 Project posted! Builders will start bidding within hours.')">Post Project</button>
+      <button class="btn btn-outline" onclick="document.getElementById('newProjectModal').classList.remove('open')">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- Dispute Modal -->
+<div class="modal-overlay" id="disputeModal">
+  <div class="modal">
+    <div class="modal-title">Raise a Dispute</div>
+    <div class="modal-sub">Our team will review and mediate within 48 hours.</div>
+    <label>Reason for Dispute</label>
+    <select><option>Work not done as agreed</option><option>Wrong materials used</option><option>Safety concern</option><option>Work incomplete</option><option>Other</option></select>
+    <label>Describe the Issue</label>
+    <textarea rows="4" placeholder="Explain clearly what went wrong and what you expected..."></textarea>
+    <div style="background:var(--amber-light);border-radius:10px;padding:12px;margin-top:12px;font-size:12px;color:var(--amber)">
+      🏛 Funds of ₹1,20,000 will remain in escrow until the dispute is resolved. BuildMate's team will contact both parties within 48 hours.
+    </div>
+    <div style="margin-top:16px;display:flex;gap:10px">
+      <button class="btn btn-danger" style="flex:1" onclick="document.getElementById('disputeModal').classList.remove('open');showToast('🏛 Dispute raised. Our team will contact you within 48 hours.')">Submit Dispute</button>
+      <button class="btn btn-outline" onclick="document.getElementById('disputeModal').classList.remove('open')">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="success-toast" id="toast">
+  <span id="toastMsg"></span>
+</div>
+
+<script>
+  let currentRole = null;
+
+  function login(role) {
+    currentRole = role;
+    document.getElementById('landing').style.display = 'none';
+    document.getElementById('app').style.display = 'block';
+    const roleBadge = document.getElementById('roleBadge');
+    const avatar = document.getElementById('userAvatar');
+    if (role === 'owner') {
+      roleBadge.textContent = 'Homeowner';
+      roleBadge.className = 'role-badge role-owner';
+      avatar.textContent = 'PR';
+      avatar.className = 'avatar avatar-owner';
+      document.getElementById('ownerNav').style.display = 'flex';
+      document.getElementById('builderNav').style.display = 'none';
+      showOwnerTab('ownerDash');
+    } else {
+      roleBadge.textContent = 'Builder';
+      roleBadge.className = 'role-badge role-builder';
+      avatar.textContent = 'RC';
+      avatar.className = 'avatar avatar-builder';
+      document.getElementById('builderNav').style.display = 'flex';
+      document.getElementById('ownerNav').style.display = 'none';
+      showBuilderTab('builderDash');
+    }
+  }
+
+  function signout() {
+    document.getElementById('app').style.display = 'none';
+    document.getElementById('landing').style.display = 'flex';
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  }
+
+  function showOwnerTab(id) {
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+  }
+
+  function showBuilderTab(id) {
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+  }
+
+  function showTab(id, el) {
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    const nav = el.closest('.app-nav');
+    nav.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    el.classList.add('active');
+  }
+
+  function sendMsg() {
+    const input = document.getElementById('chatInput');
+    const val = input.value.trim();
+    if (!val) return;
+    const box = document.getElementById('chatBox');
+    const div = document.createElement('div');
+    div.className = 'msg msg-owner';
+    div.innerHTML = val + '<div class="msg-time">Just now</div>';
+    box.appendChild(div);
+    input.value = '';
+    box.scrollTop = box.scrollHeight;
+    setTimeout(() => {
+      const reply = document.createElement('div');
+      reply.className = 'msg msg-builder';
+      reply.innerHTML = "Let me check with my team and get back to you shortly. We value your project and want to find a fair agreement. 🙏<div class='msg-time'>Just now</div>";
+      box.appendChild(reply);
+      box.scrollTop = box.scrollHeight;
+    }, 1200);
+  }
+
+  function approveMilestone() {
+    showToast('✅ ₹1,20,000 released to Ramesh Constructions! Milestone 5 (Flooring) is now unlocked.');
+    setTimeout(() => {
+      document.querySelector('#ownerMilestones .verification-card').style.display = 'none';
+    }, 1000);
+  }
+
+  function rejectMilestone() {
+    showToast('❌ Rejection sent. Ramesh Constructions will be notified to fix the issues.');
+  }
+
+  function submitMilestone() {
+    showToast('📤 Work submitted! Priya will review and release payment if approved.');
+  }
+
+  function runVaastu() {
+    document.getElementById('vaastuResult').style.display = 'block';
+    document.getElementById('vaastuResult').scrollIntoView({behavior:'smooth'});
+    showToast('🔮 Vaastu analysis complete!');
+  }
+
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    document.getElementById('toastMsg').textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 4000);
+  }
+
+  // Close modals on backdrop click
+  document.querySelectorAll('.modal-overlay').forEach(overlay => {
+    overlay.addEventListener('click', e => {
+      if (e.target === overlay) overlay.classList.remove('open');
+    });
+  });
+</script>
+</body>
+</html>
